@@ -60,39 +60,42 @@ export class AuthService {
     return signInWithEmailAndPassword(this.auth, email, password);
   }
 
-  async loginWithGoogle() {
-    // initialize() ya fue llamado en app.component.ts — NO lo llames aquí de nuevo
+async loginWithGoogle() {
+  try {
+  const result = await SocialLogin.login({
+    provider: 'google',
+    options: {}, // ← quita los scopes completamente
+  });
 
-    const result = await SocialLogin.login({
-      provider: 'google',
-      options: { scopes: ['email', 'profile'] },
-    });
+  const idToken = (result as any)?.result?.idToken;
 
-    // ⚠️ @capgo devuelve el token en result.result.idToken, NO en result.idToken
-    const idToken = (result as any)?.result?.idToken;
-
-    if (!idToken) {
-      throw new Error('No se obtuvo idToken de Google');
-    }
-
-    const credential = GoogleAuthProvider.credential(idToken);
-    const userCredential = await signInWithCredential(this.auth, credential);
-    const user = userCredential.user;
-
-    if (user) {
-      const ref = doc(this.firestore, `users/${user.uid}`);
-      const snap = await getDoc(ref);
-      if (!snap.exists()) {
-        await setDoc(ref, {
-          uid: user.uid,
-          email: user.email,
-          name: user.displayName || '',
-          createdAt: new Date(),
-        });
-      }
-    }
-    return user;
+  if (!idToken) {
+    throw new Error('No se obtuvo idToken de Google');
   }
+
+  const credential = GoogleAuthProvider.credential(idToken);
+  const userCredential = await signInWithCredential(this.auth, credential);
+   alert('Login OK: ' + userCredential.user?.email);
+  const user = userCredential.user;
+
+  if (user) {
+    const ref = doc(this.firestore, `users/${user.uid}`);
+    const snap = await getDoc(ref);
+    if (!snap.exists()) {
+      await setDoc(ref, {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName || '',
+        createdAt: new Date(),
+      });
+    }
+  }
+  return user;
+    } catch (error: any) {
+    alert('ERROR: ' + (error?.message || JSON.stringify(error)));
+    throw error;
+  }
+}
 
   async logout() {
     await signOut(this.auth);

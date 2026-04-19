@@ -12,6 +12,6 @@ export const environment = {
   messagingSenderId: "54339445930",
   appId: "1:54339445930:web:4de23669d9a24a9e001cd3"
 }, 
-googleWebClientId: '54339445930-3q5kn0scqub56hkeuoc42arqdmbbpuhn.apps.googleusercontent.com' 
+ googleWebClientId: '54339445930-3q5kn0scqub56hkeuoc42arqdmbbpuhn.apps.googleusercontent.com'
 };
 

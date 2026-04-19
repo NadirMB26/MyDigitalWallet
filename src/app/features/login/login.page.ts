@@ -27,12 +27,14 @@ export class LoginPage {
   }
 
   async loginGoogle() {
+     alert('BOTÓN PRESIONADO');
     try {
       await this.authService.loginWithGoogle();
       console.log('Login con Google OK');
       this.router.navigateByUrl('/home');
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
+      alert('ERROR: ' + (error?.message || JSON.stringify(error)));
     }
   }
 }

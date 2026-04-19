@@ -1,13 +1,13 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
+   appId: 'com.nadir.mydigitalwallet',
   appName: 'MyDigitalWallet',
   webDir: 'www',
 plugins: {
   SocialLogin: {
     google: {
-      clientId: "TU_CLIENT_ID.apps.googleusercontent.com"
+      clientId: "54339445930-3q5kn0scqub56hkeuoc42arqdmbbpuhn.apps.googleusercontent.com"
     }
   }
 }
