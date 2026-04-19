@@ -1,0 +1,58 @@
+/* --- HEADER DE LA TARJETA --- */
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 12px 12px 0 0;
+  color: #fff;
+
+  h3 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .card-logo {
+    height: 30px;
+    margin-left: auto;
+  }
+}
+
+/* --- PREVIEW DE LA TARJETA --- */
+.card-preview {
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px;
+  text-align: left;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+
+  .card-name {
+    margin-top: 20px;
+    font-size: 14px;
+  }
+
+  .card-number {
+    font-size: 18px;
+    letter-spacing: 2px;
+    margin: 10px 0;
+  }
+
+  .card-expiry {
+    font-size: 14px;
+  }
+}
+
+/* --- COLORES POR FRANQUICIA --- */
+.visa-card {
+  background: linear-gradient(135deg, #1a1f71, #3b82f6); /* Azul Visa */
+}
+
+.mastercard-card {
+  background: linear-gradient(135deg, #eb001b, #f79e1b); /* Rojo/Naranja Mastercard */
+}
+
+.unknown-card {
+  background: #999; /* Gris para desconocidas */
+}

@@ -1,11 +1,20 @@
-import { Component } from '@angular/core';
+
+import { Component, OnInit } from '@angular/core';
+import { SocialLogin } from '@capgo/capacitor-social-login';
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  styleUrls: ['app.component.scss'],
-  standalone: false,
+  standalone: false
 })
-export class AppComponent {
-  constructor() {}
+export class AppComponent implements OnInit {
+
+  async ngOnInit() {
+    await SocialLogin.initialize({
+      google: {
+        webClientId: environment.googleWebClientId, // guárdalo en environment
+      },
+    });
+  }
 }

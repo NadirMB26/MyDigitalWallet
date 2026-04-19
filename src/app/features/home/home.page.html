@@ -1,0 +1,187 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>My Digital Wallet</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="openProfileModal()">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="auth-content">
+  <div class="auth-container">
+    <ion-card class="auth-card">
+
+      <!-- Perfil -->
+      <ion-card-header>
+      <div class="profile-info">
+        <div *ngIf="userPs$ | async as profile" class="profile-header">
+          <h2>Hello2 {{ profile.name }} {{ profile.lastName }}!</h2>
+          <p>{{ profile.email }}</p>
+        </div>
+      </div>
+      </ion-card-header>
+
+      <!-- Wallet -->
+      <ion-card-header>
+        <ion-card-subtitle>Let's save your money.</ion-card-subtitle>
+      </ion-card-header>
+
+      
+      <ion-card-content>
+        <!-- Estado de tarjetas -->
+        <div *ngIf="(cards$ | async)?.length === 0; else cardList">
+          <p>No hay tarjetas disponibles.</p>
+        </div>
+
+<ng-template #cardList>
+  <div *ngFor="let card of cards$ | async" 
+       class="card-preview"
+       [ngClass]="{
+         'visa-card': card.brand === 'Visa',
+         'mastercard-card': card.brand === 'Mastercard',
+         'unknown-card': card.brand !== 'Visa' && card.brand !== 'Mastercard'
+       }">
+
+    <!-- Logo de franquicia -->
+<div class="card-header">
+  <h3>{{ card.brand }}</h3>
+  <img *ngIf="card.brand === 'Visa'" src="assets/icon/visa.png" alt="Visa Logo" class="card-logo">
+  <img *ngIf="card.brand === 'Mastercard'" src="assets/icon/mastercard.png" alt="Mastercard Logo" class="card-logo">
+  <img *ngIf="card.brand !== 'Visa' && card.brand !== 'Mastercard'" src="assets/icon/unknown.svg" alt="Unknown Logo" class="card-logo">
+</div>
+
+    <!-- Datos de la tarjeta -->
+    <p class="card-name">{{ card.cardholderName }}</p>
+    <p class="card-number">**** **** **** {{ card.cardNumber.slice(-4) }}</p>
+    <p class="card-expiry">Exp: {{ card.expiryDate }}</p>
+
+    <!-- Botones -->
+    <div class="card-actions">
+      <ion-button fill="clear" color="light" (click)="updateCard(card)">
+        <ion-icon name="pencil-outline"></ion-icon>
+      </ion-button>
+      <ion-button fill="clear" color="danger" (click)="deleteCard(card)">
+        <ion-icon name="trash-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </div>
+</ng-template>
+
+
+
+
+        <!-- Botones de acción -->
+        <div class="action-buttons-row">
+          <div class="action-item">
+            <ion-button class="change-card-btn">
+              <ion-icon name="albums-outline"></ion-icon>
+            </ion-button>
+            <p>Change Card</p>
+          </div>
+
+          <div class="action-item">
+            <ion-button class="pay-now-btn">
+              <ion-icon name="card-outline"></ion-icon>
+            </ion-button>
+            <p>Pay Now</p>
+          </div>
+
+          <div class="action-item">
+            <ion-button class="add-card-btn2" (click)="openAddCardModal()">
+              <ion-icon name="add-circle-outline"></ion-icon>
+            </ion-button>
+            <p>Add Card</p>
+          </div>
+        </div>
+
+        <!-- Historial -->
+        <div class="card-history">
+          <div class="history-header">
+            <h3>Card History</h3>
+            <a routerLink="/history">View All</a>
+          </div>
+          <ion-list>
+            <ion-item>
+              <ion-icon slot="start" name="receipt-outline"></ion-icon>
+              <ion-label>No transactions with this selected card.</ion-label>
+            </ion-item>
+          </ion-list>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>
+
+<!-- Modal de perfil -->
+<ion-modal 
+  [isOpen]="isProfileModalOpen" 
+  (didDismiss)="closeProfileModal()"
+  [breakpoints]="[0.3, 0.7, 1]" 
+  [initialBreakpoint]="0.7">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>My Profile</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="closeProfileModal()">
+            <ion-icon name="close-outline"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content class="ion-padding">
+      <div class="profile-modal">
+
+        <!-- Avatar y nombre -->
+        <ion-avatar class="profile-avatar">
+          <ion-icon name="person-circle-outline"></ion-icon>
+        </ion-avatar>
+        <h2>{{ editableProfile.name }} {{ editableProfile.lastName }}</h2>
+        <p>{{ editableProfile.email }}</p>
+
+        <!-- First Name -->
+        <ion-item>
+          <ion-icon slot="start" name="person-outline"></ion-icon>
+          <ion-label position="stacked">First Name</ion-label>
+          <ion-input [(ngModel)]="editableProfile.name"></ion-input>
+        </ion-item>
+
+        <!-- Last Name -->
+        <ion-item>
+          <ion-icon slot="start" name="person-outline"></ion-icon>
+          <ion-label position="stacked">Last Name</ion-label>
+          <ion-input [(ngModel)]="editableProfile.lastName"></ion-input>
+        </ion-item>
+
+        <!-- Biometrics -->
+        <ion-item>
+          <ion-icon slot="start" name="finger-print-outline"></ion-icon>
+          <ion-label>Biometrics</ion-label>
+          <ion-toggle [(ngModel)]="editableProfile.biometrics" (ionChange)="toggleBiometric()"></ion-toggle>
+        </ion-item>
+
+        <!-- Botón Guardar -->
+        <ion-button expand="block" color="success" shape="round" (click)="saveProfile()">
+          <ion-icon slot="start" name="save-outline"></ion-icon>
+          Save Changes
+        </ion-button>
+
+        <div style="margin-top: 20px;"></div>
+
+        <!-- Botón Logout (invertido) -->
+        <ion-button expand="block" fill="outline" color="danger" shape="round" (click)="auth.logout(); closeProfileModal()">
+          <ion-icon slot="start" name="log-out-outline"></ion-icon>
+          Logout
+        </ion-button>
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+
+
+
+
