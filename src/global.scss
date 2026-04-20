@@ -22,96 +22,89 @@
 /* Dark Mode */
 @import "@ionic/angular/css/palettes/dark.system.css";
 
-/* Fondo oscuro elegante */
-.auth-content {
-  --background: #0f172a;
+/* ── Home dark override ───────────────────── */
+ion-content.home-content {
+  --background: #0a0a14 !important;
+  --color: #f0f0f8;
 }
 
-/* Contenedor centrado */
-.auth-container {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 20px;
+/* Fuerza el fondo oscuro en toda la página home */
+.ion-page:has(ion-content.home-content) {
+  background: #0a0a14;
 }
 
-/* Card principal (solo para login/perfil, no para tarjetas de wallet) */
-.auth-card {
-  width: 100%;
-  max-width: 380px;
-  border-radius: 20px;
-  padding: 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  background: #ffffff;
+ion-content.home-content::part(background) {
+  background: #0a0a14;
 }
 
-/* Títulos */
-ion-card-title {
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
-  color: #0f172a;
+ion-content.home-content::part(scroll) {
+  background: #0a0a14;
 }
 
-ion-card-subtitle {
-  text-align: center;
-  font-size: 14px;
-  color: #666;
-  margin-top: 4px;
-}
-
-/* Inputs */
-.custom-input {
-  margin-top: 12px;
-  --background: #f5f7fb;
-  border-radius: 12px;
-  padding-left: 10px;
-}
-
-ion-input, ion-select {
-  font-size: 14px;
-}
-
-/* Botones */
-.auth-btn {
-  margin-top: 20px;
-  --background: #22c55e;
-  --border-radius: 12px;
-  font-weight: bold;
-  color: #fff;
-}
-
-.google-btn {
-  --background: white;
-  color: black;
-  border: 1px solid #ddd;
-  --border-radius: 12px;
-  font-weight: bold;
-}
-
-.biometric-btn {
+/* Evita que ion-card o ion-list sobreescriban con blanco */
+ion-content.home-content ion-card {
   --background: transparent;
-  --box-shadow: none;
-  color: #000;
-  font-weight: bold;
-  text-transform: none;
-  margin-top: 12px;
+  background: transparent;
+  box-shadow: none;
+}
 
-  ion-icon {
-    font-size: 20px;
-    margin-right: 8px;
+ion-content.home-content ion-list {
+  --background: transparent;
+  background: transparent;
+}
+
+ion-content.home-content ion-item {
+  --background: transparent;
+}
+/* Fuerza toolbar oscuro solo en home */
+.ion-page:has(ion-content.home-content) ion-header,
+.ion-page:has(ion-content.home-content) ion-toolbar {
+  --background: #0a0a14;
+  --color: #f0f0f8;
+  --border-color: transparent;
+}
+// ── Ionic Item overrides para auth ────────────────
+.custom-input {
+  --inner-padding-end: 0;
+  --inner-padding-start: 0;
+  --inner-border-width: 0;
+  --border-width: 0;
+  --highlight-height: 0;
+
+  // Quita la línea inferior que Ionic agrega por defecto
+  &::part(native) {
+    background: transparent;
+    border-radius: 14px;
   }
 }
 
-/* Links */
-.auth-link {
-  text-align: center;
-  margin-top: 15px;
+// ── Animaciones globales ───────────────────────────
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
-  a {
-    color: #22c55e;
-    font-weight: bold;
-    text-decoration: none;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blobPulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50%       { transform: scale(1.1); opacity: 0.65; }
+}
+
+// ── Reset de ion-button ────────────────────────────
+ion-button {
+  --transition: transform 0.15s ease, box-shadow 0.2s ease;
+
+  &:active {
+    transform: scale(0.97);
   }
+}
+
+// ── Skeleton en tema oscuro ────────────────────────
+ion-skeleton-text {
+  --background: #1a1a2e;
+  --background-rgb: 26, 26, 46;
 }

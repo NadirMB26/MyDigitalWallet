@@ -146,4 +146,24 @@ export class PaymentModalComponent implements OnInit {
   close() {
     this.modalCtrl.dismiss();
   }
+
+  getCardClass(brand: string): string {
+  const b = this.getBrandKey(brand);
+  const map: any = { visa: 'acf-visa', mastercard: 'acf-mc', amex: 'acf-amex' };
+  return map[b] || 'acf-unknown';
+}
+
+getBrandKey(brand: string): string {
+  const b = (brand || '').toLowerCase();
+  if (b.includes('visa')) return 'visa';
+  if (b.includes('master')) return 'mastercard';
+  if (b.includes('amex') || b.includes('american')) return 'amex';
+  return 'unknown';
+}
+
+formatCardNumber(num: string): string {
+  if (!num) return '**** **** **** ****';
+  const clean = num.replace(/\D/g, '');
+  return clean.replace(/(.{4})/g, '$1  ').trim();
+}
 }

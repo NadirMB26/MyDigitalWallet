@@ -75,7 +75,6 @@ async loginWithGoogle() {
 
   const credential = GoogleAuthProvider.credential(idToken);
   const userCredential = await signInWithCredential(this.auth, credential);
-   alert('Login OK: ' + userCredential.user?.email);
   const user = userCredential.user;
 
   if (user) {

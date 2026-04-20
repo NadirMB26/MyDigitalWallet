@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AlertController, ModalController } from '@ionic/angular';
 import { AuthService } from 'src/app/core/services/auth';
 import { CardService } from 'src/app/core/services/card.service';
@@ -38,6 +38,9 @@ export class HomePage {
   defaultCardTransactions$: Observable<Transaction[]> = of([]);
   activeCard: any = null;
 
+  @ViewChild('cardsScroll') cardsScrollRef!: ElementRef;
+  @ViewChild('dotsContainer') dotsContainer!: ElementRef;
+
   constructor(
     public auth: AuthService,
     public cardService: CardService,
@@ -46,11 +49,15 @@ export class HomePage {
     private alertCtrl: AlertController,
     private biometricService: BiometricService,
     private paymentService: PaymentService,
-     private notificationService: NotificationService
+    private notificationService: NotificationService
   ) {}
 
   async ionViewWillEnter() {
     await this.loadTransactions();
+  }
+
+  ionViewDidEnter() {
+    this.buildDots();
   }
 
   private async loadTransactions() {
@@ -69,6 +76,31 @@ export class HomePage {
     } else {
       this.defaultCardTransactions$ = of([]);
     }
+
+    // Rebuild dots after cards reload
+    setTimeout(() => this.buildDots(), 100);
+  }
+
+  buildDots() {
+    const cards = (this.cardService.cards$.value || []).length;
+    const container = this.dotsContainer?.nativeElement;
+    if (!container || !cards) return;
+    container.innerHTML = '';
+    for (let i = 0; i < cards; i++) {
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === 0 ? ' active' : '');
+      container.appendChild(d);
+    }
+  }
+
+  onCardsScroll() {
+    const el = this.cardsScrollRef?.nativeElement;
+    const container = this.dotsContainer?.nativeElement;
+    if (!el || !container) return;
+    const idx = Math.round(el.scrollLeft / 282);
+    container.querySelectorAll('.dot').forEach((d: Element, i: number) => {
+      d.classList.toggle('active', i === idx);
+    });
   }
 
   openProfileModal() {
@@ -89,8 +121,11 @@ export class HomePage {
       component: AddCardModalComponent
     });
     await modal.present();
-    await modal.onWillDismiss();
-    await this.loadTransactions(); // ← recarga al cerrar
+
+    const { data, role } = await modal.onWillDismiss();
+    if (role === 'confirm' && data?.saved) {
+      await this.loadTransactions();
+    }
   }
 
   async updateCard(card: any) {
@@ -105,7 +140,7 @@ export class HomePage {
       const uid = this.auth.getCurrentUser()?.uid;
       if (uid && data.id) {
         await this.cardService.updateCard(data.id, uid, data);
-        await this.loadTransactions(); // ← recarga al editar
+        await this.loadTransactions();
       }
     }
   }
@@ -123,7 +158,7 @@ export class HomePage {
             const uid = this.auth.getCurrentUser()?.uid;
             if (uid) {
               await this.cardService.deleteCard(card.id, uid);
-              await this.loadTransactions(); // ← recarga al eliminar
+              await this.loadTransactions();
             }
           }
         }
@@ -172,6 +207,14 @@ export class HomePage {
           ]
         });
         await alert.present();
+      } else {
+        const alert = await this.alertCtrl.create({
+          header: 'No compatible',
+          message: 'Tu dispositivo no soporta autenticación biométrica.',
+          buttons: ['OK']
+        });
+        await alert.present();
+        this.editableProfile.biometrics = false;
       }
     } else {
       await this.biometricService.disableBiometric(this.editableProfile.uid);
@@ -188,7 +231,7 @@ export class HomePage {
       });
       await modal.present();
       await modal.onWillDismiss();
-      await this.loadTransactions(); // ← recarga al cambiar tarjeta
+      await this.loadTransactions();
     }
   }
 
@@ -202,28 +245,28 @@ export class HomePage {
 
     const { data, role } = await modal.onWillDismiss();
     if (role === 'confirm' && data) {
-      await this.loadTransactions(); // ← recarga al confirmar pago
+      await this.loadTransactions();
     }
   }
 
   async openTotalExpenses() {
-  const modal = await this.modalCtrl.create({
-    component: TotalExpensesModalComponent
-  });
-  await modal.present();
-  await modal.onWillDismiss();
-  await this.loadTransactions();
-}
-
-async testNotification() {
-  const user = this.auth.getCurrentUser();
-  if (user?.uid) {
-    await this.notificationService.notifyPaymentSuccess(
-      user.uid,
-      'Tienda Test',
-      50000
-    );
-    console.log('Notificación enviada');
+    const modal = await this.modalCtrl.create({
+      component: TotalExpensesModalComponent
+    });
+    await modal.present();
+    await modal.onWillDismiss();
+    await this.loadTransactions();
   }
-}
+
+  async testNotification() {
+    const user = this.auth.getCurrentUser();
+    if (user?.uid) {
+      await this.notificationService.notifyPaymentSuccess(
+        user.uid,
+        'Tienda Test',
+        50000
+      );
+      console.log('Notificación enviada');
+    }
+  }
 }

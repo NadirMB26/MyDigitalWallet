@@ -139,6 +139,18 @@ export class TotalExpensesModalComponent {
       .reduce((sum, tx) => sum + tx.amount, 0);
   }
 
+  dayHasTransaction(day: number | null): boolean {
+  if (!day || !this.transactions.length) return false;
+  return this.transactions.some(tx => {
+    const txDate = tx.date instanceof Date ? tx.date : (tx.date as any).toDate();
+    return (
+      txDate.getDate() === day &&
+      txDate.getMonth() === this.currentMonth.getMonth() &&
+      txDate.getFullYear() === this.currentMonth.getFullYear()
+    );
+  });
+}
+
   get spendPercent(): number {
     return Math.min((this.totalSpend / this.monthlyLimit) * 100, 100);
   }
@@ -169,4 +181,35 @@ async openChangeCard() {
   close() {
     this.modalCtrl.dismiss();
   }
+
+  getCardClass(brand: string): string {
+  if (brand === 'Visa') return 'acf-visa';
+  if (brand === 'Mastercard') return 'acf-mc';
+  return 'acf-unknown';
+}
+
+getTxIcon(tx: any): string {
+  const m = (tx.merchant || '').toLowerCase();
+  if (m.includes('mc') || m.includes('burger') || m.includes('pizza') || m.includes('food')) return 'fast-food-outline';
+  if (m.includes('zara') || m.includes('shop') || m.includes('store')) return 'bag-outline';
+  if (m.includes('amazon') || m.includes('apple') || m.includes('tech')) return 'laptop-outline';
+  return 'storefront-outline';
+}
+
+getTxIconClass(tx: any): string {
+  const icon = this.getTxIcon(tx);
+  if (icon === 'fast-food-outline') return 'food';
+  if (icon === 'bag-outline') return 'shop';
+  if (icon === 'laptop-outline') return 'tech';
+  return 'other';
+}
+
+get selectedDayLabel(): string {
+  if (!this.selectedDate) return '';
+  return this.selectedDate.toLocaleDateString('es-CO', { 
+    weekday: 'short', 
+    day: 'numeric', 
+    month: 'short' 
+  });
+}
 }

@@ -1,295 +1,138 @@
-// Header
-ion-toolbar.expenses-toolbar {
-  --background: #0d1b2a;
-  --color: #ffffff;
+ion-content { --background: #0a0a14; }
+
+ion-toolbar.dark-toolbar {
+  --background: #0a0a14;
+  --border-color: rgba(255,255,255,0.06);
+  --color: #f0f0f8;
+  ion-title { font-weight: 700; color: #f0f0f8; }
+  .close-btn { --color: #7070a0; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; }
 }
 
-.expenses-title {
-  color: #ffffff;
-  font-weight: 700;
-  font-size: 1.1rem;
-}
-
-.close-btn {
-  --color: #ffffff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  letter-spacing: 0.05em;
-}
-
-// Content
-ion-content.expenses-content {
-  --background: #f4f6f9;
-}
-
-// Card Info
-.card-info-card {
-  margin: 16px;
-  border-radius: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-
-  ion-card-content {
-    padding: 14px 16px;
-  }
-
-  .card-row {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    .card-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      .brand-logo {
-        width: 44px;
-        height: auto;
-        object-fit: contain;
-      }
-
-      .card-details {
-        display: flex;
-        flex-direction: column;
-
-        .card-holder-name {
-          font-weight: 600;
-          font-size: 0.95rem;
-          color: #1a1a2e;
-        }
-
-        .card-last4 {
-          font-size: 0.8rem;
-          color: #888;
-          letter-spacing: 0.08em;
-          margin-top: 2px;
-        }
-      }
-    }
-
-    .change-btn {
-      --color: #1a1a2e;
-      font-weight: 600;
-      font-size: 0.85rem;
-      --padding-end: 0;
-      ion-icon {
-        margin-left: 4px;
-        font-size: 0.9rem;
-      }
-    }
-  }
-}
-
-// Total Spend
-.total-spend-div {
-  margin: 0 16px 16px;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 20px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-  text-align: center;
-
-  .spend-label {
-    font-size: 0.82rem;
-    color: #888;
-    margin: 0 0 6px;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-  }
-
-  .spend-amount {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: #4caf50;
-    margin: 0 0 14px;
-  }
-
-  .spend-bar-bg {
-    background: #e8f5e9;
-    border-radius: 99px;
-    height: 8px;
-    width: 100%;
-    overflow: hidden;
-
-    .spend-bar-fill {
-      background: linear-gradient(90deg, #4caf50, #81c784);
-      height: 100%;
-      border-radius: 99px;
-      transition: width 0.5s ease;
-    }
-  }
-
-  .spend-percent-label {
-    font-size: 0.75rem;
-    color: #aaa;
-    margin: 8px 0 0;
-  }
-}
-
-// Calendar
-.calendar-div {
-  margin: 0 16px 16px;
-  background: #ffffff;
-  border-radius: 16px;
+.exp-container {
   padding: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-
-  .calendar-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 12px;
-
-    .month-label {
-      font-weight: 700;
-      font-size: 0.95rem;
-      color: #1a1a2e;
-    }
-
-    .nav-btns {
-      display: flex;
-      gap: 0;
-      ion-button {
-        --color: #1a1a2e;
-        --padding-start: 4px;
-        --padding-end: 4px;
-      }
-    }
-  }
-
-  .weekdays-row {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    margin-bottom: 6px;
-
-    .weekday {
-      text-align: center;
-      font-size: 0.75rem;
-      font-weight: 600;
-      color: #aaa;
-    }
-  }
-
-  .days-grid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-
-    .day-cell {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 50%;
-      font-size: 0.85rem;
-      color: #333;
-      cursor: pointer;
-      transition: background 0.2s;
-
-      &.empty {
-        cursor: default;
-      }
-
-      &.today {
-        border: 2px solid #4caf50;
-        color: #4caf50;
-        font-weight: 700;
-      }
-
-      &.selected {
-        background: #4caf50;
-        color: #ffffff;
-        font-weight: 700;
-        border: none;
-      }
-
-      &:not(.empty):not(.selected):hover {
-        background: #f0f0f0;
-      }
-    }
-  }
+  background: #0a0a14;
+  min-height: 100%;
 }
 
-// Transactions
-.transactions-div {
-  margin: 0 16px 32px;
-  background: #ffffff;
+// ── Card selector ──────────────────────────
+.card-selector {
+  background: #12121f;
+  border: 1px solid rgba(255,255,255,0.07);
   border-radius: 16px;
-  padding: 16px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
-
-  .no-tx {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 24px 0;
-    color: #ccc;
-
-    ion-icon {
-      font-size: 2rem;
-      margin-bottom: 8px;
-    }
-
-    p {
-      font-size: 0.85rem;
-      margin: 0;
-    }
-  }
-
-  .tx-item {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 12px 0;
-    border-bottom: 1px solid #f0f0f0;
-
-    &:last-child {
-      border-bottom: none;
-    }
-
-    .tx-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      background: #f4f6f9;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-
-      ion-icon {
-        font-size: 1.2rem;
-        color: #555;
-      }
-    }
-
-    .tx-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-
-      .tx-merchant {
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: #1a1a2e;
-      }
-
-      .tx-time {
-        font-size: 0.75rem;
-        color: #aaa;
-        margin-top: 2px;
-      }
-    }
-
-    .tx-amount {
-      font-weight: 700;
-      font-size: 1rem;
-      color: #1a1a2e;
-
-      &.declined {
-        color: #e53935;
-        text-decoration: line-through;
-      }
-    }
-  }
+  padding: 13px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
 }
+.cs-left { display: flex; align-items: center; gap: 12px; }
+.cs-chip {
+  width: 42px; height: 28px; border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+  &.acf-visa    { background: linear-gradient(135deg, #1a1f71, #2563eb); }
+  &.acf-mc      { background: linear-gradient(135deg, #7f1d1d, #b91c1c 55%, #f59e0b); }
+  &.acf-unknown { background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1); }
+  .logo-visa { font-size: 11px; font-weight: 900; font-style: italic; color: #fff; font-family: serif; }
+  .logo-mc { display: flex; }
+  .mc-c1 { width: 14px; height: 14px; border-radius: 50%; background: #e53e3e; }
+  .mc-c2 { width: 14px; height: 14px; border-radius: 50%; background: #f59e0b; margin-left: -6px; }
+}
+.cs-name { font-size: 13px; font-weight: 600; color: #f0f0f8; }
+.cs-num  { font-size: 11px; color: #7070a0; font-family: 'Courier New', monospace; letter-spacing: 0.06em; }
+.cs-change {
+  font-size: 11px; font-weight: 700; color: #a8e63d;
+  background: none; border: none; cursor: pointer; letter-spacing: 0.06em;
+}
+
+// ── Spend block ────────────────────────────
+.spend-block {
+  background: #12121f;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 18px 16px 14px;
+  margin-bottom: 14px;
+}
+.spend-lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7070a0; margin-bottom: 6px; }
+.spend-amt {
+  font-size: 28px; font-weight: 700; color: #f0f0f8; margin-bottom: 14px; letter-spacing: -0.5px;
+  span { font-size: 14px; color: #7070a0; font-weight: 500; margin-left: 4px; }
+}
+.bar-bg { height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; margin-bottom: 8px; overflow: hidden; }
+.bar-fill { height: 100%; background: linear-gradient(90deg, #a8e63d, #6bcf3d); border-radius: 3px; transition: width 0.6s cubic-bezier(0.34,1.56,0.64,1); }
+.bar-meta { display: flex; justify-content: space-between; }
+.bar-pct   { font-size: 11px; font-weight: 700; color: #a8e63d; }
+.bar-limit { font-size: 11px; color: #7070a0; }
+
+// ── Calendar ───────────────────────────────
+.cal-block {
+  background: #12121f;
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 16px;
+  padding: 14px 12px;
+  margin-bottom: 16px;
+}
+.cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.cal-month  { font-size: 14px; font-weight: 700; color: #f0f0f8; }
+.cal-navs   { display: flex; gap: 4px; }
+.cal-nav {
+  width: 28px; height: 28px; border-radius: 8px;
+  background: rgba(255,255,255,0.05); border: none;
+  color: #7070a0; font-size: 14px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  &:hover { background: rgba(255,255,255,0.09); color: #f0f0f8; }
+}
+.weekdays-row { display: grid; grid-template-columns: repeat(7,1fr); margin-bottom: 4px; }
+.wd { text-align: center; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; color: #7070a0; text-transform: uppercase; padding: 4px 0; }
+.days-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.day-cell {
+  height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; color: #7070a0; cursor: pointer; transition: all 0.15s; position: relative;
+  &:hover:not(.empty) { background: rgba(255,255,255,0.05); color: #f0f0f8; }
+  &.today { color: #f0f0f8; font-weight: 700; background: rgba(255,255,255,0.07); }
+  &.selected { background: #a8e63d; color: #0a0a14; font-weight: 700; border-radius: 10px; }
+  &.empty { pointer-events: none; }
+  &.has-tx::after {
+    content: ''; width: 4px; height: 4px; border-radius: 50%;
+    background: #a8e63d; position: absolute; bottom: 3px;
+    left: 50%; transform: translateX(-50%);
+  }
+  &.selected::after { display: none; }
+}
+
+// ── Transactions ───────────────────────────
+.tx-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.tx-title { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #7070a0; }
+.tx-date  { font-size: 11px; color: #a8e63d; font-weight: 600; }
+
+.tx-item {
+  background: #12121f;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+  transition: border-color 0.2s;
+  &:active { transform: scale(0.98); }
+}
+.tx-icon-wrap {
+  width: 38px; height: 38px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  ion-icon { font-size: 17px; }
+  &.food { background: rgba(251,146,60,0.15); ion-icon { color: #fb923c; } }
+  &.shop { background: rgba(168,230,61,0.12); ion-icon { color: #a8e63d; } }
+  &.tech { background: rgba(59,130,246,0.15); ion-icon { color: #3b82f6; } }
+  &.other{ background: rgba(112,112,160,0.15); ion-icon { color: #7070a0; } }
+}
+.tx-info { flex: 1; }
+.tx-merchant { font-size: 13px; font-weight: 600; color: #f0f0f8; display: block; margin-bottom: 2px; }
+.tx-time     { font-size: 11px; color: #7070a0; }
+.tx-right    { text-align: right; }
+.tx-amount   { font-size: 14px; font-weight: 700; color: #f0f0f8; display: block;
+  &.declined { color: #ef4444; text-decoration: line-through; } }
+.tx-status   { font-size: 10px; font-weight: 700; letter-spacing: 0.06em; color: #a8e63d;
+  &.dec { color: #ef4444; } }
+
+.no-tx { text-align: center; padding: 32px; color: #7070a0; font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 4px; }

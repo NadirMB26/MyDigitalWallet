@@ -1,140 +1,127 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>My Digital Wallet</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="openProfileModal()">
-        <ion-icon name="person-circle-outline"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="home-content" [scrollEvents]="true">
 
-<ion-content class="auth-content">
-  <div class="auth-container">
-    <ion-card class="auth-card">
+  <!-- Top Bar -->
+  <div class="top-bar">
+    <div class="greeting">
+      <p class="greeting-sub">MY DIGITAL WALLET</p>
+      <h2 class="greeting-name" *ngIf="userPs$ | async as profile">
+        Hello, {{ profile.name }} 👋
+      </h2>
+    </div>
+    <button class="avatar-btn" (click)="openProfileModal()">
+      <span *ngIf="userPs$ | async as profile">
+        {{ profile.name?.charAt(0) }}{{ profile.lastName?.charAt(0) }}
+      </span>
+    </button>
+  </div>
 
-      <!-- Perfil -->
-      <ion-card-header>
-      <div class="profile-info">
-        <div *ngIf="userPs$ | async as profile" class="profile-header">
-          <h2>Hello2 {{ profile.name }} {{ profile.lastName }}!</h2>
-          <p>{{ profile.email }}</p>
+  <!-- Cards Section -->
+  <p class="section-label">MY CARDS</p>
+  <div class="cards-scroll" #cardsScroll (scroll)="onCardsScroll()">
+    <ng-container *ngFor="let card of cards$ | async; let i = index">
+      <div class="card-item card-anim"
+           [ngClass]="{
+             'visa-card': card.brand === 'Visa',
+             'mc-card': card.brand === 'Mastercard',
+             'unknown-card': card.brand !== 'Visa' && card.brand !== 'Mastercard'
+           }"
+           [style.animation-delay]="i * 80 + 'ms'">
+
+        <div class="card-top">
+          <span class="card-brand">
+            {{ card.brand === 'Visa' ? 'Debit' : 'Credit' }}
+          </span>
+          <span class="card-logo-text">{{ card.brand === 'Mastercard' ? 'MC' : card.brand }}</span>
+        </div>
+
+        <p class="card-num">**** **** **** {{ card.cardNumber.slice(-4) }}</p>
+
+        <div class="card-bottom">
+          <div>
+            <div class="card-holder-label">Cardholder</div>
+            <div class="card-holder-name">{{ card.cardholderName }}</div>
+          </div>
+          <div class="card-exp-block">
+            <div class="card-exp-label">Expires</div>
+            <div class="card-exp">{{ card.expiryDate }}</div>
+          </div>
+        </div>
+
+        <!-- Acciones hover -->
+        <div class="card-actions">
+          <button class="card-action-btn" (click)="updateCard(card)">✎</button>
+          <button class="card-action-btn danger" (click)="deleteCard(card)">✕</button>
         </div>
       </div>
-      </ion-card-header>
+    </ng-container>
 
-      <!-- Wallet -->
-      <ion-card-header>
-        <ion-card-subtitle>Let's save your money.</ion-card-subtitle>
-      </ion-card-header>
-
-      
-      <ion-card-content>
-        <!-- Estado de tarjetas -->
-        <div *ngIf="(cards$ | async)?.length === 0; else cardList">
-          <p>No hay tarjetas disponibles.</p>
-        </div>
-
-<ng-template #cardList>
-  <div *ngFor="let card of cards$ | async" 
-       class="card-preview"
-       [ngClass]="{
-         'visa-card': card.brand === 'Visa',
-         'mastercard-card': card.brand === 'Mastercard',
-         'unknown-card': card.brand !== 'Visa' && card.brand !== 'Mastercard'
-       }">
-
-    <!-- Logo de franquicia -->
-<div class="card-header">
-  <h3>{{ card.brand }}</h3>
-  <img *ngIf="card.brand === 'Visa'" src="assets/icon/visa.png" alt="Visa Logo" class="card-logo">
-  <img *ngIf="card.brand === 'Mastercard'" src="assets/icon/mastercard.png" alt="Mastercard Logo" class="card-logo">
-  <img *ngIf="card.brand !== 'Visa' && card.brand !== 'Mastercard'" src="assets/icon/unknown.svg" alt="Unknown Logo" class="card-logo">
-</div>
-
-    <!-- Datos de la tarjeta -->
-    <p class="card-name">{{ card.cardholderName }}</p>
-    <p class="card-number">**** **** **** {{ card.cardNumber.slice(-4) }}</p>
-    <p class="card-expiry">Exp: {{ card.expiryDate }}</p>
-
-    <!-- Botones -->
-    <div class="card-actions">
-      <ion-button fill="clear" color="light" (click)="updateCard(card)">
-        <ion-icon name="pencil-outline"></ion-icon>
-      </ion-button>
-      <ion-button fill="clear" color="danger" (click)="deleteCard(card)">
-        <ion-icon name="trash-outline"></ion-icon>
-      </ion-button>
+    <!-- Add Card -->
+    <div class="add-card-item" (click)="openAddCardModal()">
+      <div class="add-icon">+</div>
+      <span>ADD CARD</span>
     </div>
   </div>
-</ng-template>
 
+  <!-- Dots -->
+  <div class="scroll-dots" #dotsContainer></div>
 
-
-
-        <!-- Botones de acción -->
-          <div class="action-buttons-row">
-            <div class="action-item">
-              <ion-button class="change-card-btn" (click)="openCardCarousel()">
-                <ion-icon name="albums-outline"></ion-icon>
-              </ion-button>
-              <p>Change Card</p>
-            </div>
-
-              <ion-button (click)="testNotification()">Test Notificación</ion-button>
-
-          <div class="action-item">
-            <ion-button class="pay-now-btn" (click)="openPaymentModal()">
-                <ion-icon name="card-outline"></ion-icon>
-            </ion-button>
-            <p>Pay Now</p>
-          </div>
-
-          <div class="action-item">
-            <ion-button class="add-card-btn2" (click)="openAddCardModal()">
-              <ion-icon name="add-circle-outline"></ion-icon>
-            </ion-button>
-            <p>Add Card</p>
-          </div>
-        </div>
-
-        <!-- Historial -->
-      <div class="card-history">
-        <div class="history-header">
-          <h3>Card History</h3>
-          <a (click)="openTotalExpenses()">View All</a>
-        </div>
-
-      <ion-list *ngIf="(defaultCardTransactions$ | async) as transacciones; else noTx">
-        <ion-item *ngFor="let transaccion of transacciones">
-          <ion-icon slot="start" name="receipt-outline"></ion-icon>
-          <ion-label>
-            <h2>{{ transaccion.merchant }}</h2>
-            <p>{{ transaccion.amount | currency:'COP' }} - {{ transaccion.date | date:'short' }}</p>
-          </ion-label>
-        </ion-item>
-      </ion-list>
-
-      <ng-template #noTx>
-        <ion-item>
-          <ion-icon slot="start" name="receipt-outline"></ion-icon>
-          <ion-label>No transactions with this selected card.</ion-label>
-        </ion-item>
-      </ng-template>
-
+  <!-- Quick Actions -->
+  <p class="section-label">QUICK ACTIONS</p>
+  <div class="actions-row">
+    <div class="action-btn" (click)="openCardCarousel()">
+      <div class="action-circle ac-cyan">
+        <ion-icon name="albums-outline"></ion-icon>
       </div>
-
-      </ion-card-content>
-    </ion-card>
+      <span class="action-label">Change</span>
+    </div>
+    <div class="action-btn" (click)="openPaymentModal()">
+      <div class="action-circle ac-green">
+        <ion-icon name="card-outline"></ion-icon>
+      </div>
+      <span class="action-label">Pay Now</span>
+    </div>
+    <div class="action-btn" (click)="openAddCardModal()">
+      <div class="action-circle ac-navy">
+        <ion-icon name="add-outline"></ion-icon>
+      </div>
+      <span class="action-label">Add Card</span>
+    </div>
   </div>
+
+  <!-- History -->
+  <div class="history-panel">
+    <div class="history-header">
+      <h3>Card History</h3>
+      <a (click)="openTotalExpenses()">View All →</a>
+    </div>
+
+    <ng-container *ngIf="(defaultCardTransactions$ | async) as txs; else noTx">
+      <div class="tx-item tx-anim" *ngFor="let tx of txs; let i = index"
+           [style.animation-delay]="i * 60 + 'ms'">
+        <div class="tx-icon">
+          <ion-icon name="receipt-outline"></ion-icon>
+        </div>
+        <div class="tx-info">
+          <div class="tx-merchant">{{ tx.merchant }}</div>
+          <div class="tx-date">{{ tx.date | date:'short' }}</div>
+        </div>
+        <div class="tx-amount">{{ tx.amount | currency:'COP':'symbol':'1.0-0' }}</div>
+      </div>
+    </ng-container>
+
+    <ng-template #noTx>
+      <div class="tx-empty">
+        <ion-icon name="receipt-outline"></ion-icon>
+        <p>No transactions yet</p>
+      </div>
+    </ng-template>
+  </div>
+
 </ion-content>
 
-<!-- Modal de perfil -->
-<ion-modal 
-  [isOpen]="isProfileModalOpen" 
-  (didDismiss)="closeProfileModal()"
-  [breakpoints]="[0.3, 0.7, 1]" 
-  [initialBreakpoint]="0.7">
+<!-- Modal Perfil -->
+<ion-modal [isOpen]="isProfileModalOpen" (didDismiss)="closeProfileModal()"
+           [breakpoints]="[0.3, 0.7, 1]" [initialBreakpoint]="0.7">
   <ng-template>
     <ion-header>
       <ion-toolbar>
@@ -146,47 +133,34 @@
         </ion-buttons>
       </ion-toolbar>
     </ion-header>
-
     <ion-content class="ion-padding">
       <div class="profile-modal">
-
-        <!-- Avatar y nombre -->
-        <ion-avatar class="profile-avatar">
-          <ion-icon name="person-circle-outline"></ion-icon>
-        </ion-avatar>
+        <div class="profile-avatar-circle">
+          {{ editableProfile.name?.charAt(0) }}{{ editableProfile.lastName?.charAt(0) }}
+        </div>
         <h2>{{ editableProfile.name }} {{ editableProfile.lastName }}</h2>
         <p>{{ editableProfile.email }}</p>
 
-        <!-- First Name -->
-        <ion-item>
+        <ion-item class="modal-input">
           <ion-icon slot="start" name="person-outline"></ion-icon>
           <ion-label position="stacked">First Name</ion-label>
           <ion-input [(ngModel)]="editableProfile.name"></ion-input>
         </ion-item>
-
-        <!-- Last Name -->
-        <ion-item>
+        <ion-item class="modal-input">
           <ion-icon slot="start" name="person-outline"></ion-icon>
           <ion-label position="stacked">Last Name</ion-label>
           <ion-input [(ngModel)]="editableProfile.lastName"></ion-input>
         </ion-item>
-
-        <!-- Biometrics -->
-        <ion-item>
+        <ion-item class="modal-input">
           <ion-icon slot="start" name="finger-print-outline"></ion-icon>
           <ion-label>Biometrics</ion-label>
           <ion-toggle [(ngModel)]="editableProfile.biometrics" (ionChange)="toggleBiometric()"></ion-toggle>
         </ion-item>
 
-        <!-- Botón Guardar -->
-        <ion-button expand="block" color="success" shape="round" (click)="saveProfile()">
+        <ion-button expand="block" class="save-btn" (click)="saveProfile()">
           <ion-icon slot="start" name="save-outline"></ion-icon>
           Save Changes
         </ion-button>
-
-        <div style="margin-top: 20px;"></div>
-
-        <!-- Botón Logout (invertido) -->
         <ion-button expand="block" fill="outline" color="danger" shape="round" (click)="auth.logout(); closeProfileModal()">
           <ion-icon slot="start" name="log-out-outline"></ion-icon>
           Logout
@@ -195,8 +169,3 @@
     </ion-content>
   </ng-template>
 </ion-modal>
-
-
-
-
-

@@ -12,7 +12,9 @@ import { AuthService } from 'src/app/core/services/auth';
 export class CardCarouselModalComponent implements AfterViewInit {
   @Input() cards: any[] = [];
   @ViewChild('swiperRef') swiperRef!: ElementRef;
+
   currentIndex = 0;
+  activeIndex = 0;
 
   constructor(
     private modalCtrl: ModalController,
@@ -24,7 +26,6 @@ export class CardCarouselModalComponent implements AfterViewInit {
   ) {}
 
   ngAfterViewInit() {
-    // ✅ Espera que el modal de Ionic termine de renderizar el DOM
     setTimeout(() => {
       this.initSwiper();
     }, 300);
@@ -34,7 +35,6 @@ export class CardCarouselModalComponent implements AfterViewInit {
     const swiperEl = this.swiperRef?.nativeElement;
     if (!swiperEl) return;
 
-    // ✅ Asigna parámetros directamente al elemento
     Object.assign(swiperEl, {
       slidesPerView: 1,
       centeredSlides: true,
@@ -44,9 +44,17 @@ export class CardCarouselModalComponent implements AfterViewInit {
         slideChange: (swiper: any) => {
           this.zone.run(() => {
             this.currentIndex = swiper.activeIndex;
+            this.activeIndex = swiper.activeIndex; // ← sincroniza los dots
           });
         }
       }
+    });
+
+    // ← el addEventListener va AQUÍ, dentro del método, después de Object.assign
+    swiperEl.addEventListener('swiperslidechange', (e: any) => {
+      this.zone.run(() => {
+        this.activeIndex = e.detail[0].activeIndex;
+      });
     });
 
     swiperEl.initialize();
@@ -92,7 +100,7 @@ export class CardCarouselModalComponent implements AfterViewInit {
   detectBrand(num: string): string {
     if (!num) return 'Unknown';
     if (num.startsWith('4')) return 'Visa';
-        if (num.startsWith('5')) return 'Mastercard';
+    if (num.startsWith('5')) return 'Mastercard';
     return 'Unknown';
   }
 
