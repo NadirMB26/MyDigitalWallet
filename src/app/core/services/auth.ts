@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   Auth,
   createUserWithEmailAndPassword,
@@ -19,23 +19,24 @@ export class AuthService {
   user: any = null;
   userProfile$ = new BehaviorSubject<any>(null);
 
-  constructor(
-    private auth: Auth,
-    private firestore: Firestore,
-    private router: Router,
-    private cardService: CardService
-    // ❌ NO inyectes AngularFireAuth aquí
-  ) {
-    this.auth.onAuthStateChanged((user) => {
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
+  private router = inject(Router);
+  // ✅ Sin CardService aquí
+
+  constructor() {
+    this.auth.onAuthStateChanged(async (user) => {
       this.user = user;
       if (user) {
         const ref = doc(this.firestore, `users/${user.uid}`);
         docData(ref).subscribe((profile) => this.userProfile$.next(profile));
-        this.cardService.loadCardsByUser(user.uid);
+        
+        // ✅ Import lazy para romper el ciclo
+        const { CardService } = await import('./card.service');
+        const cardService = inject(CardService); // ← esto no funciona fuera de contexto de inyección
         this.router.navigate(['/home']);
       } else {
         this.userProfile$.next(null);
-        this.cardService.clearCards();
         this.router.navigate(['/login']);
       }
     });

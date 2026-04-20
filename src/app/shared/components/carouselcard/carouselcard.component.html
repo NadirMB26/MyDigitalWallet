@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Seleccionar Tarjeta</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="swiper-wrapper-container">
+    <swiper-container #swiperRef init="false">
+      <swiper-slide *ngFor="let card of cards; let i = index">
+        <div class="card-preview"
+             [ngClass]="{
+               'visa-card': detectBrand(card.cardNumber) === 'Visa',
+               'mastercard-card': detectBrand(card.cardNumber) === 'Mastercard',
+               'unknown-card': detectBrand(card.cardNumber) !== 'Visa' && detectBrand(card.cardNumber) !== 'Mastercard'
+             }">
+
+          <div class="card-header">
+            <h3>{{ detectBrand(card.cardNumber) }}</h3>
+            <img *ngIf="detectBrand(card.cardNumber) === 'Visa'" src="assets/icon/visa.png" class="card-logo">
+            <img *ngIf="detectBrand(card.cardNumber) === 'Mastercard'" src="assets/icon/mastercard.png" class="card-logo">
+            <img *ngIf="detectBrand(card.cardNumber) === 'Unknown'" src="assets/icon/unknown.svg" class="card-logo">
+          </div>
+
+          <p class="card-name">{{ card.cardholderName || 'YOUR NAME' }}</p>
+          <p class="card-number">{{ formatCardNumber(card.cardNumber) }}</p>
+          <p class="card-expiry">{{ card.expiryDate || 'MM/YY' }}</p>
+        </div>
+      </swiper-slide>
+    </swiper-container>
+  </div>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="bottom-action">
+      <ion-button expand="block" class="set-default-btn" (click)="confirmSetDefault()">
+        <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+        Establecer como predeterminada
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

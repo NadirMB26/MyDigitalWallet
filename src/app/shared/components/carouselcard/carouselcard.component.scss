@@ -1,0 +1,52 @@
+.swiper-wrapper-container {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 20px 0;
+}
+
+swiper-container {
+  width: 100%;
+}
+
+swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.card-preview {
+  width: 100%;
+  border-radius: 16px;
+  padding: 24px;
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    h3 { margin: 0; font-weight: bold; font-size: 16px; }
+    .card-logo { height: 30px; }
+  }
+
+  .card-name { margin-top: 24px; font-size: 14px; opacity: 0.9; }
+  .card-number { font-size: 18px; letter-spacing: 3px; margin: 10px 0; }
+  .card-expiry { font-size: 14px; opacity: 0.9; }
+}
+
+.visa-card { background: linear-gradient(135deg, #1a1f71, #3b82f6); }
+.mastercard-card { background: linear-gradient(135deg, #eb001b, #f79e1b); }
+.unknown-card { background: linear-gradient(135deg, #666, #999); }
+
+.bottom-action {
+  padding: 8px 16px;
+
+  .set-default-btn {
+    --background: #28a745;
+    --color: #fff;
+    font-weight: bold;
+  }
+}

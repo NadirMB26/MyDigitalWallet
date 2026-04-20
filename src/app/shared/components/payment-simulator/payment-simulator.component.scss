@@ -1,0 +1,61 @@
+.active-card-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #f0f4ff;
+  border-radius: 10px;
+  padding: 12px;
+  margin-bottom: 16px;
+  font-size: 14px;
+
+  ion-icon { font-size: 20px; color: #3b82f6; }
+  ion-badge { margin-left: auto; }
+}
+
+.section-title {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  margin: 16px 0 8px;
+}
+
+.merchants-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.merchant-card {
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  padding: 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &.selected {
+    border-color: #3b82f6;
+    background: #eff6ff;
+  }
+
+  .merchant-icon { font-size: 28px; }
+  .merchant-name { font-size: 11px; font-weight: 600; margin: 4px 0 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .merchant-category { font-size: 10px; color: #888; margin: 0; }
+  .merchant-amount { font-size: 13px; color: #3b82f6; font-weight: bold; margin: 4px 0 0; }
+}
+
+.shuffle-btn {
+  width: 100%;
+  margin: 8px 0;
+}
+
+.custom-amount { margin-top: 8px; }
+
+.payment-summary {
+  margin-top: 8px;
+  ion-note { font-size: 13px; }
+}
+
+.pay-btn-wrapper {
+  padding: 8px 16px;
+}

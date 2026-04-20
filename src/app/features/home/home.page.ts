@@ -7,6 +7,8 @@ import { AddCardModalComponent } from 'src/app/shared/components/add-card/add-ca
 import { UserService } from 'src/app/core/services/user';
 import { take } from 'rxjs/internal/operators/take';
 import { BiometricService } from 'src/app/core/services/biometric.service';
+import { CardCarouselModalComponent } from 'src/app/shared/components/carouselcard/carouselcard.component';
+import { PaymentModalComponent } from 'src/app/shared/components/payment-simulator/payment-simulator.component';
 
 @Component({
   selector: 'app-home',
@@ -15,14 +17,12 @@ import { BiometricService } from 'src/app/core/services/biometric.service';
   standalone: false,
 })
 export class HomePage {
-  isProfileModalOpen = false;
-
-  // Exponemos directamente los observables
+ isProfileModalOpen = false;
   userProfile$ = this.auth.userProfile$;
   cards$ = this.cardService.cards$;
   userPs$ = this.userService.getUserProfile$();
 
-    editableProfile: any = {
+  editableProfile: any = {
     uid: 'USER_UID',
     firstName: '',
     lastName: '',
@@ -31,9 +31,22 @@ export class HomePage {
   };
   userPassword: string = '';
 
-  constructor(public auth: AuthService, public cardService: CardService,
-     private modalCtrl: ModalController, private userService: UserService,
-      private alertCtrl: AlertController, private biometricService: BiometricService ) {}
+  constructor(
+    public auth: AuthService,
+    public cardService: CardService,
+    private modalCtrl: ModalController,
+    private userService: UserService,
+    private alertCtrl: AlertController,
+    private biometricService: BiometricService
+  ) {}
+
+  // ✅ Se ejecuta cada vez que el home es visible
+  async ionViewWillEnter() {
+    const user = this.auth.getCurrentUser();
+    if (user?.uid) {
+      await this.cardService.loadCardsByUser(user.uid);
+    }
+  }
 
   openProfileModal() {
     this.isProfileModalOpen = true;
@@ -161,6 +174,34 @@ async toggleBiometric() {
   }
 }
 
+async openCardCarousel() {
+  const user = await this.auth.getCurrentUser();
+  if (user?.uid) {
+    const cards = await this.cardService.loadCardsByUser(user.uid);
+    console.log('Tarjetas enviadas al carousel:', cards); 
+    const modal = await this.modalCtrl.create({
+      component: CardCarouselModalComponent,
+      componentProps: { cards }
+    });
+    await modal.present();
+  }
+}
 
+async openPaymentModal() {
+  const defaultCard = this.cardService.cards$.value.find(c => c.isDefault);
+  const modal = await this.modalCtrl.create({
+    component: PaymentModalComponent,
+    componentProps: {
+      selectedCardId: defaultCard?.id
+    }
+  });
+    await modal.present(); // ✅ esto faltaba
 
+  const { data, role } = await modal.onWillDismiss();
+  if (role === 'confirm' && data) {
+    console.log('Pago confirmado con datos:', data);
+    // aquí puedes llamar a tu servicio de pago o simular la transacción
+  }
+
+}
 }

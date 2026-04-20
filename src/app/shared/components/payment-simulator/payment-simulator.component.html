@@ -1,3 +1,94 @@
-<p>
-  payment-simulator works!
-</p>
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Simular Pago</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <!-- Tarjeta activa -->
+  <div class="active-card-info" *ngIf="activeCard">
+    <ion-icon name="card-outline"></ion-icon>
+    <span>{{ activeCard.brand }} **** {{ activeCard.cardNumber?.slice(-4) }}</span>
+    <ion-badge color="success">Predeterminada</ion-badge>
+  </div>
+
+  <!-- Comercios generados -->
+  <h3 class="section-title">Selecciona un comercio</h3>
+  <div class="merchants-grid">
+    <div *ngFor="let merchant of merchants"
+         class="merchant-card"
+         [class.selected]="selectedMerchant === merchant"
+         (click)="selectMerchant(merchant)">
+      <div class="merchant-icon">{{ merchant.icon }}</div>
+      <p class="merchant-name">{{ merchant.name }}</p>
+      <p class="merchant-category">{{ merchant.category }}</p>
+      <p class="merchant-amount">${{ merchant.amount | number:'1.2-2' }}</p>
+    </div>
+  </div>
+
+  <ion-button fill="clear" (click)="shuffleMerchants()" class="shuffle-btn">
+    <ion-icon name="refresh-outline" slot="start"></ion-icon>
+    Generar nuevos comercios
+  </ion-button>
+
+  <!-- Monto personalizado -->
+  <div class="custom-amount" *ngIf="selectedMerchant">
+    <h3 class="section-title">Monto personalizado (opcional)</h3>
+    <ion-item>
+      <ion-label position="floating">Monto en COP</ion-label>
+      <ion-input
+        type="number"
+        [(ngModel)]="customAmount"
+        placeholder="{{ selectedMerchant.amount }}">
+      </ion-input>
+    </ion-item>
+  </div>
+
+  <!-- Resumen del pago -->
+  <div class="payment-summary" *ngIf="selectedMerchant">
+    <h3 class="section-title">Resumen</h3>
+    <ion-list>
+      <ion-item>
+        <ion-label>Comercio</ion-label>
+        <ion-note slot="end">{{ selectedMerchant.icon }} {{ selectedMerchant.name }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label>Categoría</ion-label>
+        <ion-note slot="end">{{ selectedMerchant.category }}</ion-note>
+      </ion-item>
+      <ion-item>
+        <ion-label><strong>Total</strong></ion-label>
+        <ion-note slot="end" color="primary">
+          <strong>${{ totalAmount | number:'1.2-2' }} COP</strong>
+        </ion-note>
+      </ion-item>
+      <ion-item *ngIf="activeCard">
+        <ion-label>Tarjeta</ion-label>
+        <ion-note slot="end">**** {{ activeCard.cardNumber?.slice(-4) }}</ion-note>
+      </ion-item>
+    </ion-list>
+  </div>
+
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <div class="pay-btn-wrapper">
+      <ion-button
+        expand="block"
+        [disabled]="!selectedMerchant || isProcessing"
+        (click)="pay()"
+        color="success">
+        <ion-spinner *ngIf="isProcessing" name="crescent" slot="start"></ion-spinner>
+        <ion-icon *ngIf="!isProcessing" name="checkmark-circle-outline" slot="start"></ion-icon>
+        {{ isProcessing ? 'Procesando...' : 'Pagar $' + (totalAmount | number:'1.2-2') + ' COP' }}
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-footer>

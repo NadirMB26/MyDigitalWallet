@@ -73,17 +73,19 @@
 
 
         <!-- Botones de acción -->
-        <div class="action-buttons-row">
-          <div class="action-item">
-            <ion-button class="change-card-btn">
-              <ion-icon name="albums-outline"></ion-icon>
-            </ion-button>
-            <p>Change Card</p>
-          </div>
+          <div class="action-buttons-row">
+            <div class="action-item">
+              <ion-button class="change-card-btn" (click)="openCardCarousel()">
+                <ion-icon name="albums-outline"></ion-icon>
+              </ion-button>
+              <p>Change Card</p>
+            </div>
+
+
 
           <div class="action-item">
-            <ion-button class="pay-now-btn">
-              <ion-icon name="card-outline"></ion-icon>
+            <ion-button class="pay-now-btn" (click)="openPaymentModal()">
+                <ion-icon name="card-outline"></ion-icon>
             </ion-button>
             <p>Pay Now</p>
           </div>

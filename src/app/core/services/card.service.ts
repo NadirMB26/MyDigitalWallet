@@ -1,16 +1,21 @@
 import { Injectable } from '@angular/core';
 import { Firestore, doc, setDoc, collection, query, where, getDocs, deleteDoc, updateDoc, getDoc } from '@angular/fire/firestore';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from './auth';
+import { ToastController } from '@ionic/angular';
 
 @Injectable({ providedIn: 'root' })
 export class CardService {
   cards$ = new BehaviorSubject<any[]>([]);
 
-  constructor(private firestore: Firestore) {}
+  constructor(private firestore: Firestore, private authService: AuthService,private toastCtrl: ToastController) {}
 
   async saveCard(card: any, uid: string) {
     const brand = this.detectBrand(card.cardNumber);
-    const newCard = { ...card, brand, uid, createdAt: new Date() };
+    const q = query(collection(this.firestore, 'cards'), where('uid', '==', uid));
+    const snap = await getDocs(q);
+    const isDefault = snap.empty;
+    const newCard = { ...card, brand, uid, createdAt: new Date(),  isDefault  };
     const cardId = `${uid}_${Date.now()}`;
     await setDoc(doc(this.firestore, `cards/${cardId}`), newCard);
 
@@ -60,6 +65,45 @@ async updateCard(cardId: string, uid: string, data: any) {
   const cards = await this.loadCardsByUser(uid);
   console.log('Tarjetas recargadas:', cards);
 }
+
+async setDefaultCard(cardId: string, uid: string) {
+  const q = query(collection(this.firestore, 'cards'), where('uid', '==', uid));
+  const snap = await getDocs(q);
+
+  // Recorremos todas las tarjetas del usuario
+  for (const d of snap.docs) {
+    if (d.id === cardId) {
+      // La seleccionada queda en true
+      await updateDoc(d.ref, { isDefault: true });
+    } else {
+      // Todas las demás quedan en false
+      await updateDoc(d.ref, { isDefault: false });
+    }
+  }
+
+  // Refrescar observable
+  const cards = await this.loadCardsByUser(uid);
+
+  // Mostrar en consola cuál quedó como default
+  const defaultCard = cards.find(c => c.isDefault === true);
+  console.log('✅ Tarjeta predeterminada:', defaultCard);
+}
+
+
+
+async changeCard(card: any) {
+  const user = await this.authService.getCurrentUser();
+  if (user?.uid) {
+    await this.setDefaultCard(card.id, user.uid);
+    const toast = await this.toastCtrl.create({
+      message: 'Tarjeta establecida como predeterminada',
+      duration: 2000,
+      color: 'success'
+    });
+    await toast.present();
+  }
+}
+
 
 
 }
