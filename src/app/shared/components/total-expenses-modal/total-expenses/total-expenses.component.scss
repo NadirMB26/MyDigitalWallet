@@ -1,0 +1,295 @@
+// Header
+ion-toolbar.expenses-toolbar {
+  --background: #0d1b2a;
+  --color: #ffffff;
+}
+
+.expenses-title {
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.close-btn {
+  --color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  letter-spacing: 0.05em;
+}
+
+// Content
+ion-content.expenses-content {
+  --background: #f4f6f9;
+}
+
+// Card Info
+.card-info-card {
+  margin: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+
+  ion-card-content {
+    padding: 14px 16px;
+  }
+
+  .card-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      .brand-logo {
+        width: 44px;
+        height: auto;
+        object-fit: contain;
+      }
+
+      .card-details {
+        display: flex;
+        flex-direction: column;
+
+        .card-holder-name {
+          font-weight: 600;
+          font-size: 0.95rem;
+          color: #1a1a2e;
+        }
+
+        .card-last4 {
+          font-size: 0.8rem;
+          color: #888;
+          letter-spacing: 0.08em;
+          margin-top: 2px;
+        }
+      }
+    }
+
+    .change-btn {
+      --color: #1a1a2e;
+      font-weight: 600;
+      font-size: 0.85rem;
+      --padding-end: 0;
+      ion-icon {
+        margin-left: 4px;
+        font-size: 0.9rem;
+      }
+    }
+  }
+}
+
+// Total Spend
+.total-spend-div {
+  margin: 0 16px 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  text-align: center;
+
+  .spend-label {
+    font-size: 0.82rem;
+    color: #888;
+    margin: 0 0 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .spend-amount {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #4caf50;
+    margin: 0 0 14px;
+  }
+
+  .spend-bar-bg {
+    background: #e8f5e9;
+    border-radius: 99px;
+    height: 8px;
+    width: 100%;
+    overflow: hidden;
+
+    .spend-bar-fill {
+      background: linear-gradient(90deg, #4caf50, #81c784);
+      height: 100%;
+      border-radius: 99px;
+      transition: width 0.5s ease;
+    }
+  }
+
+  .spend-percent-label {
+    font-size: 0.75rem;
+    color: #aaa;
+    margin: 8px 0 0;
+  }
+}
+
+// Calendar
+.calendar-div {
+  margin: 0 16px 16px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+
+  .calendar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 12px;
+
+    .month-label {
+      font-weight: 700;
+      font-size: 0.95rem;
+      color: #1a1a2e;
+    }
+
+    .nav-btns {
+      display: flex;
+      gap: 0;
+      ion-button {
+        --color: #1a1a2e;
+        --padding-start: 4px;
+        --padding-end: 4px;
+      }
+    }
+  }
+
+  .weekdays-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    margin-bottom: 6px;
+
+    .weekday {
+      text-align: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #aaa;
+    }
+  }
+
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+
+    .day-cell {
+      aspect-ratio: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      font-size: 0.85rem;
+      color: #333;
+      cursor: pointer;
+      transition: background 0.2s;
+
+      &.empty {
+        cursor: default;
+      }
+
+      &.today {
+        border: 2px solid #4caf50;
+        color: #4caf50;
+        font-weight: 700;
+      }
+
+      &.selected {
+        background: #4caf50;
+        color: #ffffff;
+        font-weight: 700;
+        border: none;
+      }
+
+      &:not(.empty):not(.selected):hover {
+        background: #f0f0f0;
+      }
+    }
+  }
+}
+
+// Transactions
+.transactions-div {
+  margin: 0 16px 32px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+
+  .no-tx {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px 0;
+    color: #ccc;
+
+    ion-icon {
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+
+    p {
+      font-size: 0.85rem;
+      margin: 0;
+    }
+  }
+
+  .tx-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    .tx-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      background: #f4f6f9;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+
+      ion-icon {
+        font-size: 1.2rem;
+        color: #555;
+      }
+    }
+
+    .tx-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+
+      .tx-merchant {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #1a1a2e;
+      }
+
+      .tx-time {
+        font-size: 0.75rem;
+        color: #aaa;
+        margin-top: 2px;
+      }
+    }
+
+    .tx-amount {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #1a1a2e;
+
+      &.declined {
+        color: #e53935;
+        text-decoration: line-through;
+      }
+    }
+  }
+}

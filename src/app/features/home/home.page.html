@@ -81,7 +81,7 @@
               <p>Change Card</p>
             </div>
 
-
+              <ion-button (click)="testNotification()">Test Notificación</ion-button>
 
           <div class="action-item">
             <ion-button class="pay-now-btn" (click)="openPaymentModal()">
@@ -99,18 +99,31 @@
         </div>
 
         <!-- Historial -->
-        <div class="card-history">
-          <div class="history-header">
-            <h3>Card History</h3>
-            <a routerLink="/history">View All</a>
-          </div>
-          <ion-list>
-            <ion-item>
-              <ion-icon slot="start" name="receipt-outline"></ion-icon>
-              <ion-label>No transactions with this selected card.</ion-label>
-            </ion-item>
-          </ion-list>
+      <div class="card-history">
+        <div class="history-header">
+          <h3>Card History</h3>
+          <a (click)="openTotalExpenses()">View All</a>
         </div>
+
+      <ion-list *ngIf="(defaultCardTransactions$ | async) as transacciones; else noTx">
+        <ion-item *ngFor="let transaccion of transacciones">
+          <ion-icon slot="start" name="receipt-outline"></ion-icon>
+          <ion-label>
+            <h2>{{ transaccion.merchant }}</h2>
+            <p>{{ transaccion.amount | currency:'COP' }} - {{ transaccion.date | date:'short' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+
+      <ng-template #noTx>
+        <ion-item>
+          <ion-icon slot="start" name="receipt-outline"></ion-icon>
+          <ion-label>No transactions with this selected card.</ion-label>
+        </ion-item>
+      </ng-template>
+
+      </div>
+
       </ion-card-content>
     </ion-card>
   </div>

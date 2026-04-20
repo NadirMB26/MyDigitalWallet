@@ -4,6 +4,7 @@ import { faker } from '@faker-js/faker';
 import { PaymentService } from 'src/app/core/services/payment';
 import { AuthService } from 'src/app/core/services/auth';
 import { CardService } from 'src/app/core/services/card.service';
+import { NotificationService } from 'src/app/core/services/notification';
 
 interface Merchant {
   name: string;
@@ -43,6 +44,7 @@ export class PaymentModalComponent implements OnInit {
     private authService: AuthService,
     private cardService: CardService,
     private toastCtrl: ToastController,
+    private notificationService: NotificationService,
   ) {}
 
   ngOnInit() {
@@ -104,6 +106,12 @@ export class PaymentModalComponent implements OnInit {
         status: 'approved',
       });
 
+      await this.notificationService.notifyPaymentSuccess(
+      user.uid,
+      this.selectedMerchant.name,
+      this.totalAmount
+    );
+
       // Recargar transacciones
       //await this.paymentService.loadTransactionsByUser(user.uid);
 
@@ -117,6 +125,7 @@ export class PaymentModalComponent implements OnInit {
 
       this.modalCtrl.dismiss({ success: true });
     } catch (err) {
+      await this.notificationService.hapticError();
       const toast = await this.toastCtrl.create({
         message: '❌ Error procesando el pago',
         duration: 2000,

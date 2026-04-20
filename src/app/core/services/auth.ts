@@ -24,23 +24,22 @@ export class AuthService {
   private router = inject(Router);
   // ✅ Sin CardService aquí
 
-  constructor() {
-    this.auth.onAuthStateChanged(async (user) => {
-      this.user = user;
-      if (user) {
-        const ref = doc(this.firestore, `users/${user.uid}`);
-        docData(ref).subscribe((profile) => this.userProfile$.next(profile));
-        
-        // ✅ Import lazy para romper el ciclo
-        const { CardService } = await import('./card.service');
-        const cardService = inject(CardService); // ← esto no funciona fuera de contexto de inyección
-        this.router.navigate(['/home']);
-      } else {
-        this.userProfile$.next(null);
-        this.router.navigate(['/login']);
-      }
-    });
-  }
+constructor() {
+  this.auth.onAuthStateChanged(async (user) => {
+    this.user = user;
+    if (user) {
+      const ref = doc(this.firestore, `users/${user.uid}`);
+      docData(ref).subscribe((profile) => {
+        // ✅ asegura que el uid siempre esté en el perfil
+        this.userProfile$.next({ ...profile, uid: user.uid });
+      });
+      this.router.navigate(['/home']);
+    } else {
+      this.userProfile$.next(null);
+      this.router.navigate(['/login']);
+    }
+  });
+}
 
   async register(email: string, password: string, userData: any) {
     const credential = await createUserWithEmailAndPassword(this.auth, email, password);

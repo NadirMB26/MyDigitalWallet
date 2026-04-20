@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, addDoc, query, where, getDocs, orderBy } from '@angular/fire/firestore';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 
 export interface Transaction {
   id?: string;
@@ -41,6 +41,12 @@ export class PaymentService {
     return transactions;
   }
 
+   getDefaultCardTransactions(uid: string, defaultCardId: string) {
+    return this.transactions$.pipe(
+      map(txs => txs.filter(tx => tx.cardId === defaultCardId))
+    );
+  }
+  
   async loadTransactionsByCard(cardId: string): Promise<Transaction[]> {
     const q = query(
       collection(this.firestore, 'transactions'),
@@ -50,4 +56,33 @@ export class PaymentService {
     const snap = await getDocs(q);
     return snap.docs.map(d => ({ id: d.id, ...d.data() })) as Transaction[];
   }
+
+async loadTransactionsByDefaultCard(uid: string, defaultCardId: string) {
+  const q = query(
+    collection(this.firestore, 'transactions'),
+    where('uid', '==', uid),
+    where('cardId', '==', defaultCardId)
+  );
+
+  const snap = await getDocs(q);
+  let txs = snap.docs.map(d => {
+    const data = d.data() as any;
+    return {
+      id: d.id,
+      ...data,
+      date: (data.date as any).toDate()
+    } as Transaction;
+  });
+
+  // ordenar y limitar
+  txs = txs.sort((a, b) => b.date.getTime() - a.date.getTime()).slice(0, 3);
+
+  console.log('🔎 Transacciones encontradas:', txs);
+
+  this.transactions$.next(txs);
+  return txs;
+}
+
+
+
 }
